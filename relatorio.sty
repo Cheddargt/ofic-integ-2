@@ -1,0 +1,197 @@
+\documentclass[12pt, a4paper]{article}
+%\usepackage[english]{babel}
+\usepackage[portuguese]{babel}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{vmargin}
+\setmarginsrb{3 cm}{2.5 cm}{3 cm}{2.5 cm}{1 cm}{1.5 cm}{1 cm}{1.5 cm}
+\usepackage{lettrine}
+\usepackage{calligra}
+\renewcommand{\LettrineFontHook}{\calligra}
+
+
+\title{Pet Station}	% Title		
+\author{Gustavo Henrique Zeni, 
+\\ Ianca Polizelo,
+\\ Raissa Ayume N Higa.}	
+\date{\today}		% Date
+
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\pagestyle{fancy}
+\fancyhf{}
+%\rhead{\theauthor}
+\lhead{\thetitle}
+\cfoot{\thepage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+	\centering
+    \vspace*{0.5 cm}
+    \includegraphics[scale = 0.3]{logo_UTFPR.jpeg}\\[1cm]	% University Logo
+    \textsc{\LARGE Universidade Tecnológica Federal do Paraná - UTFPR}\\[2.0 cm]	% University Name
+%
+\textsc{\large Turma S71}\\[0.5 cm]				% Course Name
+	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	{ \huge \bfseries \thetitle}\\
+	\rule{\linewidth}{0.2 mm} \\[1.5 cm]
+	
+	\begin{minipage}{0.8\textwidth}
+		\begin{flushleft} \large
+			\emph{\large Alunos:}\\
+			\theauthor
+			\end{flushleft}
+			\end{minipage}~
+			\begin{minipage}{0.4\textwidth}
+			\begin{flushright} \large
+		\end{flushright}
+	\end{minipage}\\[2 cm]
+	
+	\textsc{\large Plano de Projeto da disciplina Oficinas de Integração 2}\\
+	\textsc{\large Profs.: César Manuel Vargas Benítez e César Manuel Vargas Benítez }\\
+	\vspace{2cm}
+	{\large \thedate}\\[2 cm]
+ 
+	\vfill
+	
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Título e codinome do projeto:}
+\label{objetivos}
+%
+Pet Station (PS)
+%
+
+%
+\section{Link para o blog do projeto:}
+%
+
+%
+\section{Equipe}
+%
+\begin{itemize}
+    \item Gustavo Henrique Zeni
+    \item Ianca Polizelo
+    \item Raissa Ayume N Higa 
+\end{itemize}
+%
+\section{Declaração do escopo de alto nível:}
+%
+Muitos adultos hoje possuem uma rotina em que se passa muito mais tempo fora de casa do que em casa, seja por trabalho, faculdade ou até mesmo porque viaja muito. Assim, fica ainda mais difícil conseguir cuidar do seu bichinho de estimação com todo cuidado e atenção que ele precisa. Mas o Pet Station veio para resolver este problema. O modelo idealizado será voltado para o cuidado com os gatos apenas.
+
+A estação contará com 2 módulos: estação para alimentação e estação para necessidades. Também contará com um aplicativo para fazer o gerenciamente e configurações necessárias para a utilização correta do \textit{Pet Station}. Fisicamente, elas serão independentes entre si.
+
+A estação para alimentação terá duas partes: uma para a comida e uma para a água. O reservatório de água terá um sensor de nível de água para saber quando precisa repor água. Também terá uma bomba que deixará a água corrente e um filtro para que ela sempre fique limpa. O sistema de água corrente irá incentivar o gato a tomar mais água durante o dia, evitando problemas em seus rins. A comida conterá um reservatório de ração que irá colocar no pote de alimentação porções de quantidade fixa de comida, o dono poderá escolher a quantidade de porções, em horários configurados pelo aplicativo. Antes do reservatório colocar comida no pote, o pote irá eliminar qualquer ração que tenha ficado parada da refeição anterior, assim deixando uma comida novinha para o animal.
+
+A estação para necessidades conterá uma caixa de areia que se limpará sozinha em intervalos fixos, ou o dono poderá solicitar a limpeza, através de uma pá que irá varrer a areia e eliminar as fezes e urina do animal em um recipiente separado para que mais tarde o dono possa eliminá-los corretamente.
+
+Toda a Pet Station conterá câmeras para que os donos possam observar seus animais e verificar se precisam de mais comida ou se a caixa de areia estiver suja, fora dos horários já fixados para a manutenção dos mesmos.
+
+O Pet Station não terá as seguintes funcionalidades: encher o reservatório de água sozinho, encher o reservatório de ração sozinho, eliminar a ração velha (ele deixará em um recipiente separado para que mais tarde o dono elimine corretamente), renovar a areia da caixa de areia, eliminar as fezes e urina do animal (ele deixará em um recipiente separado para que mais tarde o dono elimine corretamente), o pote de ração não terá sensores para verificar se está vazio e assim colocar mais ração (este sistema será em horários pré-determinados).
+
+Para que qualquer uma das funções existentes no Pet Station sejam ativadas fora dos horários pré-determinados, será necessário que o dono acione os mecanismos através do aplicativo.
+
+
+\subsection{Requisitos Funcionais:}
+
+\begin{itemize}
+    \item \textbf{RF01:} A interface com o usuário deve ser realizada através de um aplicativo.
+\item \textbf{RF02:} O aplicativo deve permitir que o usuário solicite que a caixa de areia seja limpa imediatamente.
+\item \textbf{RF03:} O aplicativo deve permitir ao usuário programar os horários fixos de limpeza da caixa de areia.
+\item \textbf{RF04:} O sistema de caixa de areia deve recolher as fezes do animal sempre que solicitado/programado.
+\item \textbf{RF05:} O sistema de pá da caixa de areia deverá conter sensores para saber quando chegou até o final da caixa.
+\item \textbf{RF06:} O aplicativo deve mostrar a imagem das duas câmeras, uma que estará na caixa de areia e a outra na parte de alimentação.
+\item \textbf{RF07:} O aplicativo deve permitir que o usuário solicite que a comida seja despejada imediatamente.
+\item \textbf{RF08:} O sistema deve possuir uma porção fixa de ração determinada pelos desenvolvedores do projeto.
+\item \textbf{RF09:} O sistema deve permitir ao usuário poder escolher a quantidade de porções que deseja despejar.
+\item \textbf{RF10:} O aplicativo deve permitir ao usuário programar os horários fixos de liberação de comida.
+\item \textbf{RF11:} O pote pode eliminar a comida antiga antes de colocar a nova.
+\item \textbf{RF12:} O reservatório de ração deve despejar comida no pote sempre que solicitado/programado.
+\item \textbf{RF13:} O aplicativo deve permitir ao usuário controlar se a água do bebedouro seja corrente ou parada.
+\item \textbf{RF14:} A água do bebedouro deve ser filtrada toda vez que circular.
+\end{itemize}
+
+\subsection{Requisitos Não Funcionais:}
+
+\begin{itemize}
+    \item \textbf{RNF02:} O aplicativo desenvolvido deve ser     compatível com o sistema Android.
+    \item \textbf{RNF03:} A integração entre os diferentes componentes do projeto será provida através de um Arduino.
+    \item \textbf{RNF04:} A comunicação entre o sistema e o aplicativo deve ser realizada por meio de uma conexão TCP/IP;
+    \item \textbf{RNF05:} O sistema de caixa de areia deve possuir uma câmera.
+    \item \textbf{RNF06:} O sistema de alimentação deve possuir uma câmera. 
+    \item \textbf{RNF07:} O sistema possuirá um pote de alimentação próprio que não poderá ser trocado.
+    \item \textbf{RNF08:} O sistema possuirá uma caixa de areia própria que não poderá ser trocada.
+    \item \textbf{RNF09:} O sistema possuirá um reservatório de água próprio que não poderá ser trocado.
+    \item \textbf{RNF10:} Todo o conjunto será alimentado através de tomada ligada a rede 127V.
+    \item \textbf{RNF11:} O aplicativo deve ser feito em linguagem Flutter.
+    \item \textbf{RNF12:} O microcontrolador será programado na linguagem própria do Arduino.
+\end{itemize}
+
+\subsection{Esquemático:}
+%
+Além dos requisitos funcionais e não-funcionais citados anteriormente, foi r
+%
+
+%
+\section{Integração:}
+%
+Para a confecção deste projeto, será utilizado conhecimento das seguintes matérias:
+
+\begin{itemize}
+    \item Fundamentos de Programação 1
+    \item Técnicas de Programação
+    \item Introdução à prática de laboratório em eletricidade e eletrônica
+    \item Química
+    \item Eletricidade
+    \item Circuitos Digitais
+    \item Circuitos Elétricos
+    \item Introdução a Banco de Dados
+    \item Eletrônica Geral 1
+    \item Sistemas Microcontrolados
+    \item Eletrônica Geral 2
+
+\end{itemize}
+%
+\section{Análise de riscos:}
+%
+Para a realização deste projeto, foram levantados os seguintes riscos:
+%
+
+
+
+\section{Cronograma detalhado:}
+%
+
+%
+\section{Materiais e métodos:}
+%
+
+%
+
+%\newpage
+\bibliographystyle{unsrt}
+\bibliography{biblist}
+% Aqui o texto está formatada para aceitar bibliografia no estilo bibtex! Se houver dúvidas de como exportar automaticamente a bibliografia. 
+%Se quiser utilizar outra forma de bibliografia (bibstyle.bst), façam as alterações.
+
+\end{document}
