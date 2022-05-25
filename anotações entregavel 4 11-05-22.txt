@@ -1,0 +1,21 @@
+aplicativo manda comandos pro arduino
+*usar um rtc
+módulo RTC em cada arduino pra agendar os horários
+
+casos de uso: arrumar que não é o aplicativo que manda o comando, só seta as horas
+
+diagrama casos de uso bomba:
+usuário vem primeiro
+separar em 2 diagramas
+
+diagrama de estados - diagrama caixa areia:
+- inicializa componentes n é transição, tem q ser bolinha
+- identificar diferenças entre botões de fim de curso
+- adicionar verificação do sensor de presença durante movimento do rastelo
+
+diagrama de estados - água:
+- adicionar interrupção para água e caixa de areia
+- receber comando não é transição
+
+diagrama de classes
+- avisos, alertas presença
