@@ -24,7 +24,7 @@
 #include "Arduino.h"
 
 
-//#define ESP8266_USE_SOFTWARE_SERIAL
+#define ESP8266_USE_SOFTWARE_SERIAL
 
 
 #ifdef ESP8266_USE_SOFTWARE_SERIAL
@@ -477,4 +477,3 @@ class ESP8266 {
 };
 
 #endif /* #ifndef __ESP8266_H__ */
-
