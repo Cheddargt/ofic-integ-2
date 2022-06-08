@@ -39,8 +39,13 @@ char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "Nelson";
-char pass[] = "universo";
+//char ssid[] = "Nelson";
+//char pass[] = "universo";
+char ssid[] = "BakerStreet221b";
+char pass[] = "ArseneLupin";
+//char ssid[] = "zn";
+//char pass[] = "paraquedas";
+
 
 // or Software Serial on Uno, Nano...
 #include <SoftwareSerial.h>
@@ -85,11 +90,12 @@ ezButton fim_curso_fim(Fim_Curso_Fim);
 
 
 BLYNK_WRITE(V1) {
+  Serial.print("V1 changed value: ");
+  Serial.println(V1);
   if(param.asInt() == 1) {
     Serial.println("Limpeza solicitada");
-    limpeza_completa = false;
     limpeza_solicitada = true;
-    Blynk.disconnect();
+    limpeza_completa = false;
   }
 }
 
@@ -109,24 +115,15 @@ void checkLEDStatus()
 ***/
 
 void realizarLimpeza() {
-   if (limpeza_solicitada = false) {
-    digitalWrite(Motor_IN1, HIGH);
-    digitalWrite(Motor_IN2, HIGH);
-    Blynk.run();
-   } else {
-    // Limpeza solicitada
-    if(limpeza_solicitada == true) {
-      limpeza_completa = false;
       //Verifica sensor de presença
       //presenca = digitalRead(PIR);
       presenca = LOW;
-      //led2.on();
-
+      
       if(presenca == LOW) //Se não achou nada
       {
        
-        Serial.println("Presenca nao detectada");
-        Serial.println("Ligando motor.");
+        //Serial.println("Presenca nao detectada");
+        //Serial.println("Ligando motor.");
         
         fim_curso_inicio.loop(); //MUST
         fim_curso_fim.loop();
@@ -156,7 +153,7 @@ void realizarLimpeza() {
           delay(5000);
           praFrente = true;
           limpeza_completa = true;
-          limpeza_solicitada == false;
+          limpeza_solicitada = false;
           //led2.off();
           Serial.println("** Limpeza completa! **");
         }
@@ -194,10 +191,8 @@ void realizarLimpeza() {
         digitalWrite(Motor_IN2, HIGH);
         delay(100); //Mudar depois para um tempo maior
       }
-    }
-  }
 }
-
+    
 void setup()
 {
   // Debug console
@@ -232,7 +227,16 @@ void setup()
 
 void loop()
 {
-  //Blynk.run();
-  realizarLimpeza();
-  //realizarLimpeza();
+  /*
+  if (limpeza_completa = true) {
+    digitalWrite(Motor_IN1, HIGH);
+    digitalWrite(Motor_IN2, HIGH);
+  }
+  */
+  if (!limpeza_solicitada) {
+    Blynk.run();
+  } 
+  else {
+    realizarLimpeza();
+  }
 }

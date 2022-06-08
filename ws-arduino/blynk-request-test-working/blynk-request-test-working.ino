@@ -35,8 +35,10 @@ char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "Nelson";
-char pass[] = "universo";
+//char ssid[] = "Nelson";
+//char pass[] = "universo";
+char ssid[] = "BakerStreet221b";
+char pass[] = "ArseneLupin";
 
 // or Software Serial on Uno, Nano...
 #include <SoftwareSerial.h>
