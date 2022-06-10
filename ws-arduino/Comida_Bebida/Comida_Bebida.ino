@@ -5,7 +5,7 @@
 #include <Servo.h>
 
 //Define os pinos
-#define Sensor_Infra 0 //alerta
+#define Sensor_Infra 2 //alerta
 #define Servo_Dispenser 4
 #define Servo_Pote 10
 #define Agua_Power 11
@@ -18,7 +18,7 @@
 #define Pos_Final_Pote 180
 
 //Variáveis para teste enquanto ainda não tem app
-int pedir_comida = 0; 
+int tem_comida = 0; 
 int ligar_agua = 0;
 int desligar_agua = 0;
 int opcao_menu = 0;
@@ -38,14 +38,6 @@ int readSensorAgua() {
   return water_level;             
 }
 
-void interrupcao()
-{
-  Serial.println("Interrupcao detectada");
-  Serial.println("Acabou a comida");
-
-  //i = 100; //Para ter certeza que saiu do loop do for. É pra se o break não funcionar
-  //break; //para sair do for da comida, mas não sei se vai dar certo
-}
 
 void setup() {
   // put your setup code here, to run once:
@@ -62,18 +54,11 @@ void setup() {
   digitalWrite(Agua_Power, LOW);
   //Acho que da água ainda falta coisa pra inicializar
 
-  pinMode(Relay_Pin, OUTPUT);
   digitalWrite(Relay_Pin, HIGH);
+  pinMode(Relay_Pin, OUTPUT);
+  
 
-  //Sobre a interrupção:
-  //Sensor_Infra é a porta (0 quando é porta 2, e 1 quando é porta 3)
-  //Função que executa quando a interrupção é detectada
-  //Tipo de variação do sinal a interrupção é disparada
-    //LOW: quando tensão = 0V
-    //CHANGE: quando o pino muda de estado (0V pra 5V ou 5V pra 0V)
-    //RISING: borda de subida, quando muda de 0V para 5V;
-    //FALLING: borda de descida, quando muda de 5V para 0V
-  //attachInterrupt(Sensor_Infra,interrupcao, RISING); 
+  pinMode(Sensor_Infra, INPUT);
 
 }
 
@@ -82,11 +67,13 @@ void loop() {
 
 
  
-  //Serial.println("Menu:");
-  //Serial.print("Selecione a opcao que deseja executar:");
-  //Serial.print("1 - Solicitar comida");
-  //Serial.print("2 - Ligar agua");
-  //Serial.print("3 - Desligar agua");
+//  Serial.println("Menu: \n");
+//  Serial.print("Selecione a opcao que deseja executar: \n");
+//  Serial.print("1 - Solicitar comida \n");
+//  Serial.print("2 - Ligar agua \n");
+//  Serial.print("3 - Desligar agua \n");
+//
+//  delay(1000);
 
 if (Serial.available() > 0)
 {
@@ -114,83 +101,85 @@ if (Serial.available() > 0)
     pote.write(180);
     delay(1500);
     pote.write(0);
-//    for (int posicao = Pos_Init_Pote; posicao <= Pos_Final_Pote; posicao += 1) 
-//    { 
-//      pote.write(posicao);              
-//      delay(15);                       
-//    }
-//    for (int posicao = Pos_Final_Pote; posicao >= Pos_Init_Pote; posicao -= 1) 
-//    {
-//      pote.write(posicao);              
-//      delay(15);                       
-//    }
+
     Serial.println("Limpeza do pote finalizada");
+
+    if(digitalRead(Sensor_Infra) == LOW){ //SE A LEITURA DO PINO FOR IGUAL A LOW, FAZ
+      Serial.print("Comida disponivel \r\n");
+      tem_comida = true;
+    }else{ //SENÃO, FAZ
+      Serial.print("Nao tem comida \r\n");
+      tem_comida = false;
+    }
     
     //faz servo girar x vezes
-    Serial.println("Iniciando dispenser de comida");
-    for(int i = 0; i < porcao; i++)
+    if(tem_comida)
     {
+      Serial.println("Iniciando dispenser de comida \n");
+      for(int i = 0; i < porcao; i++)
+      {
+        dispenser.detach();
+        delay(1000);
+        dispenser.attach(Servo_Dispenser);
+        dispenser.write(180);
+        delay(1000);
+  
+        Serial.println((String)"Colocada "+(i+1)+" porcao \n");
+      }
+      dispenser.write(0);
       dispenser.detach();
-      delay(1000);
-      dispenser.attach(Servo_Dispenser);
-      dispenser.write(180);
-      delay(1000);
-
-      Serial.println((String)"Colocada "+(i+1)+" porcao");
+      Serial.println("Dispenser finalizado \n");
     }
-    dispenser.write(0);
-    dispenser.detach();
-    Serial.println("Dispenser finalizado");
       //se o infra-vermelho for low -> acabou comida
         //interrupação tá configurada no setup
   }
   //Verifica se foi selecionado para ligar água
   else if(opcao_menu == '2')
   {
-    Serial.print("Ligar agua solicitado");
+    Serial.print("Ligar agua solicitado \n");
     //Verifica sensor de água
     nivel_agua = readSensorAgua();
 
-    Serial.println((String)"Nivel da agua: "+nivel_agua);
+    Serial.println((String)"Nivel da agua: "+nivel_agua+"\n");
       
       if(nivel_agua > 150)//Nível ok -> liga bomba
       {
-        Serial.print("Nivel OK");
+        Serial.print("Nivel OK \n");
 
         digitalWrite(Relay_Pin, LOW);
 
-        Serial.print("Bomba ligada");
+        Serial.print("Bomba ligada \n");
       }
       else //Nível ruim -> sem água
       {
-        Serial.print("Nivel de agua baixo. Nao vai ligar a bomba");
+        Serial.print("Nivel de agua baixo. Nao vai ligar a bomba \n");
       }
 
-      Serial.print("Agua ligada");
+      Serial.print("Agua ligada n");
   }
   
   //Verifica se foi selecionado para desligar água
   else if(opcao_menu == '3')
   {
-    Serial.print("Desligar agua solicitado");
+    Serial.print("Desligar agua solicitado \n");
 
     digitalWrite(Relay_Pin, HIGH);
     
     //Verifica sensor de água
     nivel_agua = readSensorAgua();
 
-    Serial.println((String)"Nivel da agua: "+nivel_agua);
+    Serial.println((String)"Nivel da agua: "+nivel_agua+"\n");
       
-      if(nivel_agua > 370)//Nível ok -> liga bomba
+      if(nivel_agua > 150)//Nível ok -> liga bomba
       {
-        Serial.print("Nivel OK");
+        Serial.print("Nivel OK \n");
       }
       else //Nível ruim -> sem água
       {
-        Serial.print("Nivel de agua baixo. Coloque mais agua");
+        Serial.print("Nivel de agua baixo. Coloque mais agua \n");
       }
 
-      Serial.print("Agua Desligada");
+      Serial.print("Agua Desligada \n");
   }
  }
 }

@@ -41,10 +41,10 @@ char auth[] = BLYNK_AUTH_TOKEN;
 // Set password to "" for open networks.
 //char ssid[] = "Nelson";
 //char pass[] = "universo";
-char ssid[] = "BakerStreet221b";
-char pass[] = "ArseneLupin";
-//char ssid[] = "zn";
-//char pass[] = "paraquedas";
+//char ssid[] = "BakerStreet221b";
+//char pass[] = "ArseneLupin";
+char ssid[] = "zeni12";
+char pass[] = "paraquedas";
 
 
 // or Software Serial on Uno, Nano...
@@ -60,7 +60,6 @@ ESP8266 wifi(&EspSerial);
 // WidgetLED led1(V7);
 // WidgetLED led2(V13);
 
-
 BlynkTimer timer;
 
 /*************************************************************/
@@ -74,9 +73,7 @@ BlynkTimer timer;
  
 //Definicoes pinos Arduino ligados a entrada da Ponte H
 int Motor_IN1 = 12;
-WidgetLED led1(V12);
 int Motor_IN2 = 13;
-WidgetLED led1(V13);
 
 #define PIR 8
 
@@ -93,10 +90,10 @@ ezButton fim_curso_fim(Fim_Curso_Fim);
 
 
 BLYNK_WRITE(V1) {
-  //Serial.print("V1 changed value: ");
-  //Serial.println(V1);
+  Serial.print("V1 changed value: ");
+  Serial.println(V1);
   if(param.asInt() == 1) {
-    //Serial.println("Limpeza solicitada");
+    Serial.println("Limpeza solicitada");
     limpeza_solicitada = true;
     limpeza_completa = false;
   }
@@ -119,95 +116,91 @@ void checkLEDStatus()
 
 void realizarLimpeza() {
       //Verifica sensor de presença
-      limpeza_completa = false;
       //presenca = digitalRead(PIR);
-      presenca = LOW;
-      
-      if(presenca == LOW) //Se não achou nada
-      {
-       
-        //Serial.println("Presenca nao detectada");
-        //Serial.println("Ligando motor.");
+      if(limpeza_solicitada && !limpeza_completa){
+        presenca = LOW;
         
-        fim_curso_inicio.loop(); //MUST
-        fim_curso_fim.loop();
-        
-        if(fim_curso_fim.isPressed()) {
-          Serial.println("** Rastelo voltando **");
-          praFrente = false;
-          digitalWrite(Motor_IN1, HIGH);
-          digitalWrite(Motor_IN2, HIGH);
-          delay(500);          
-          //digitalWrite(Motor_IN1, HIGH);
-          //digitalWrite(Motor_IN2, LOW);
-          //delay(5000);
-          digitalWrite(Motor_IN1, HIGH);
-          digitalWrite(Motor_IN2, LOW);
-          delay(500);
-        }
-
-        if(fim_curso_fim.isReleased())
-          praFrente = false;
-
-        if(fim_curso_inicio.isPressed()) {
-          //Serial.println("** Rastelo chegou! **");
-          // ir um pouquinho pra frente pra sair do botão
-          digitalWrite(Motor_IN1, LOW);
-          digitalWrite(Motor_IN2, HIGH);
-          delay(5000);
-          praFrente = true;
-          limpeza_completa = true;
-          limpeza_solicitada = false;
-          //led2.off();
-          //Serial.println("** Limpeza completa! **");
-        }
-
-        if(fim_curso_inicio.isReleased()) {
-          digitalWrite(Motor_IN1, HIGH);
-          digitalWrite(Motor_IN2, HIGH);
-        }
-
-        int state_fim = fim_curso_fim.getState();
-        int state_inicio = fim_curso_inicio.getState();
-
-        Serial.print("state_fim: ");
-        Serial.println(state_fim);
-        Serial.print("state_inicio: ");
-        Serial.println(state_inicio);
-        if(state_fim == HIGH || state_inicio == HIGH) { // The limit switches: UNTOUCHED
-          Serial.print("limpeza_completa: ");
-          Serial.println(limpeza_completa);
-          if (praFrente && !limpeza_completa) { 
-            //Serial.println("** Indo em direção da rampa **");
-            digitalWrite(Motor_IN1, LOW);
+        if(presenca == LOW) //Se não achou nada
+        {
+         
+          //Serial.println("Presenca nao detectada");
+          //Serial.println("Ligando motor.");
+          
+          fim_curso_inicio.loop(); //MUST
+          fim_curso_fim.loop();
+          
+          if(fim_curso_fim.isPressed()) {
+            //Serial.println("** Rastelo voltando **");
+            praFrente = false;
+            digitalWrite(Motor_IN1, HIGH);
             digitalWrite(Motor_IN2, HIGH);
-            digitalWrite(LED_BUILTIN, HIGH);
-          } else if (!limpeza_completa) {
-            //Serial.println("** Indo em direção do motor **");
+            delay(500);          
+            //digitalWrite(Motor_IN1, HIGH);
+            //digitalWrite(Motor_IN2, LOW);
+            //delay(5000);
             digitalWrite(Motor_IN1, HIGH);
             digitalWrite(Motor_IN2, LOW);
-            digitalWrite(LED_BUILTIN, LOW);
+            delay(500);
           }
-          
-        }
-        else { // The limit switch: TOUCHED
-          //Serial.println("** -- Invertendo sentido **");
+  
+          if(fim_curso_fim.isReleased())
+            praFrente = false;
+  
+          if(fim_curso_inicio.isPressed() && !praFrente) {
+            //Serial.println("** Rastelo chegou! **");
+            // ir um pouquinho pra frente pra sair do botão
+            digitalWrite(Motor_IN1, LOW);
+            digitalWrite(Motor_IN2, HIGH);
+            delay(5000);
+            praFrente = true;
+            limpeza_completa = true;
+            limpeza_solicitada = false;
+            //led2.off();
+            Serial.println("** Limpeza completa! **");
+            digitalWrite(Motor_IN1, HIGH);
+            digitalWrite(Motor_IN2, HIGH);
+          }
+  
+          if(fim_curso_inicio.isReleased()) {
+            digitalWrite(Motor_IN1, HIGH);
+            digitalWrite(Motor_IN2, HIGH);
+          }
+  
+          int state_fim = fim_curso_fim.getState();
+          int state_inicio = fim_curso_inicio.getState();
+  
+          if(state_fim == HIGH || state_inicio == HIGH) { // The limit switches: UNTOUCHED
+            //Serial.println(praFrente);
+            if (praFrente && !limpeza_completa) { 
+              //Serial.println("** Indo em direção da rampa **");
+              digitalWrite(Motor_IN1, LOW);
+              digitalWrite(Motor_IN2, HIGH);
+            } else if (!limpeza_completa) {
+              //Serial.println("** Indo em direção do motor **");
+              digitalWrite(Motor_IN1, HIGH);
+              digitalWrite(Motor_IN2, LOW);
+            }
+            
+          }
+          else { // The limit switch: TOUCHED
+            //Serial.println("** -- Invertendo sentido **");
+            digitalWrite(Motor_IN1, HIGH);
+            digitalWrite(Motor_IN2, HIGH);
+            delay(500);
+          }
+        } else { // detectou presença
+          //Serial.println("Presenca detectada. Limpeza interrompida");
           digitalWrite(Motor_IN1, HIGH);
           digitalWrite(Motor_IN2, HIGH);
-          delay(500);
+          delay(100); //Mudar depois para um tempo maior
         }
-      } else { // detectou presença
-        //Serial.println("Presenca detectada. Limpeza interrompida");
-        digitalWrite(Motor_IN1, HIGH);
-        digitalWrite(Motor_IN2, HIGH);
-        delay(100); //Mudar depois para um tempo maior
       }
 }
     
 void setup()
 {
   // Debug console
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // Blynk
   // Set ESP8266 baud rate 
@@ -216,6 +209,9 @@ void setup()
 
   // Blynk
   Blynk.begin(auth, wifi, ssid, pass);
+  
+  
+  timer.setInterval(100L, realizarLimpeza);
   // You can also specify server:
   //Blynk.begin(auth, wifi, ssid, pass, "blynk.cloud", 80);
   //Blynk.begin(auth, wifi, ssid, pass, IPAddress(192,168,1,100), 8080);
@@ -224,12 +220,10 @@ void setup()
   // timer.setInterval(1000L, blinkLedWidget);
 
 
-  fim_curso_inicio.setDebounceTime(50); // set debounce time to 50 milliseconds
-  fim_curso_fim.setDebounceTime(50);
+  fim_curso_inicio.setDebounceTime(100); // set debounce time to 50 milliseconds
+  fim_curso_fim.setDebounceTime(100);
 
-  //pinMode(PIR, INPUT);
-
-  //pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(PIR, INPUT);
   
   //Define os pinos como saida
   pinMode(Motor_IN1, OUTPUT);
@@ -240,18 +234,13 @@ void setup()
 
 void loop()
 {
-  
+  /*
   if (limpeza_completa = true) {
     digitalWrite(Motor_IN1, HIGH);
     digitalWrite(Motor_IN2, HIGH);
-    //digitalWrite(LED_BUILTIN, LOW);
   }
+  */
+  Blynk.run();
+  timer.run();
   
-  if (!limpeza_solicitada) {
-    //Serial.println("Blink rodando");
-    Blynk.run();
-  } 
-  else {
-    realizarLimpeza();
-  }
 }

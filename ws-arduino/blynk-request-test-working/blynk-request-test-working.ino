@@ -19,10 +19,9 @@
 
 // Template ID, Device Name and Auth Token are provided by the Blynk.Cloud
 // See the Device Info tab, or Template settings
-#define BLYNK_TEMPLATE_ID "TMPLc2ueuRLM"
-#define BLYNK_DEVICE_NAME "Caixa de areia"
-#define BLYNK_AUTH_TOKEN "gcsFsW4eDLtAoJPt82IzSCeyE1uFGXUe"
-
+#define BLYNK_TEMPLATE_ID "TMPLvza6Qtqy"
+#define BLYNK_DEVICE_NAME "Caixa de comida"
+#define BLYNK_AUTH_TOKEN "PgzBeXW8_ZqGnAxHIC-S5H_z1N7jKAKJ"
 
 // Comment this out to disable prints and save space
 #define BLYNK_PRINT Serial
