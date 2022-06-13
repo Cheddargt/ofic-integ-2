@@ -41,11 +41,11 @@ char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "Nelson";
-char pass[] = "universo";
 //char ssid[] = "BakerStreet221b";
 //char pass[] = "ArseneLupin";
-//char ssid[] = "zeni12";
+char ssid[] = "Nelson";
+char pass[] = "universo";
+//char ssid[] = "zn";
 //char pass[] = "paraquedas";
 
 
@@ -88,7 +88,7 @@ int presenca = 0;
 bool limpeza_completa = true;
 bool limpeza_solicitada = false;
 int ultimaLimpeza = 12;
-int limpezaAgendada = 12;
+int intervaloLimpeza = 0;
 
 ezButton fim_curso_inicio(Fim_Curso_Inicio);
 ezButton fim_curso_fim(Fim_Curso_Fim);
@@ -109,9 +109,9 @@ void clockDisplay()
   String currentDate = String(day()) + " " + month() + " " + year();
 
   // Send time to the App
-  Blynk.virtualWrite(V2, currentTime);
+  //Blynk.virtualWrite(V2, currentTime);
   // Send date to the App
-  Blynk.virtualWrite(V17, currentDate);
+  //Blynk.virtualWrite(V17, currentDate);
 }
 
 BLYNK_CONNECTED() {
@@ -150,6 +150,13 @@ void checkLEDStatus()
 ***/
 
 void realizarLimpeza() {
+      int horaAtual = hour();
+
+      if (horaAtual - (ultimaLimpeza + intervaloLimpeza)) {
+        limpeza_solicitada = true;
+        limpeza_completa = false;
+      }
+  
       //Verifica sensor de presença
       //presenca = digitalRead(PIR);
       if(limpeza_solicitada && !limpeza_completa){
@@ -251,6 +258,7 @@ void setup()
   //Blynk.begin(auth, wifi, ssid, pass, "blynk.cloud", 80);
   //Blynk.begin(auth, wifi, ssid, pass, IPAddress(192,168,1,100), 8080);
 
+  // configura intervalo de atualização do RTC
   setSyncInterval(10 * 60);
   // Display digital clock every 10 seconds
   //timer.setInterval(10000L, clockDisplay);

@@ -88,8 +88,8 @@ void clockDisplay()
 
   //ultimaLimpeza = hour();
 
-  String currentTime = String(hour()) + ":" + minute() + ":" + second();
-  String currentDate = String(day()) + " " + month() + " " + year();
+  //String currentTime = String(hour()) + ":" + minute() + ":" + second();
+  //String currentDate = String(day()) + " " + month() + " " + year();
 
   // Send time to the App
   //Blynk.virtualWrite(V2, currentTime);
@@ -263,6 +263,8 @@ void setup() {
 
   // configura intervalo de atualização do RTC
   setSyncInterval(10 * 60);
+  // Display digital clock every 10 seconds
+  //timer.setInterval(10000L, clockDisplay);
   
   dispenser.attach(Servo_Dispenser);
   pote.attach(Servo_Pote);
