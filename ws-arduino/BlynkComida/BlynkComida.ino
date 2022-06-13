@@ -19,6 +19,8 @@
 
 #include <ESP8266_Lib.h>
 #include <BlynkSimpleShieldEsp8266.h>
+#include <TimeLib.h>
+#include <WidgetRTC.h>
 
 char auth[] = BLYNK_AUTH_TOKEN;
 
@@ -26,7 +28,9 @@ char auth[] = BLYNK_AUTH_TOKEN;
 // Set password to "" for open networks.
 //char ssid[] = "BakerStreet221b";
 //char pass[] = "ArseneLupin";
-char ssid[] = "zeni11";
+//char ssid[] = "BakerStreet221b";
+//char pass[] = "ArseneLupin";
+char ssid[] = "zn";
 char pass[] = "paraquedas";
 
 
@@ -41,6 +45,8 @@ SoftwareSerial EspSerial(6, 7); // RX, TX
 ESP8266 wifi(&EspSerial);
 
 BlynkTimer timer;
+
+WidgetRTC rtc;
 
 /*************************************************************/
 /***************  Setup - Caixa de comida ********************/
@@ -63,15 +69,33 @@ BlynkTimer timer;
 //Variáveis do código
 int porcao = 2;  //quantidade de porções de comida tem que colocar
 int nivel_agua = 0;
+int ultimaComida = 12;
+int intervaloComida = 0;
 Servo dispenser;
 Servo pote;
 bool tem_comida = false; 
-
 bool agua_solicitada = false;
 bool agua_ligada = false;
 bool comida_solicitada = false;
 
 /*************************************************************/
+
+// Digital clock display of the time
+void clockDisplay()
+{
+  // You can call hour(), minute(), ... at any time
+  // Please see Time library examples for details
+
+  //ultimaLimpeza = hour();
+
+  String currentTime = String(hour()) + ":" + minute() + ":" + second();
+  String currentDate = String(day()) + " " + month() + " " + year();
+
+  // Send time to the App
+  //Blynk.virtualWrite(V2, currentTime);
+  // Send date to the App
+  //Blynk.virtualWrite(V17, currentDate);
+}
 
 BLYNK_WRITE(V5) {
   //Serial.print("V5 changed value: ");
@@ -86,16 +110,29 @@ BLYNK_WRITE(V5) {
 }
 //
 BLYNK_WRITE(V0) {
+   int currentHour = hour();
+    
   //Serial.print("V1 changed value: ");
   //Serial.println(V0);
   if(param.asInt() == 1) {
     //Serial.println("Comida solicitada");
     comida_solicitada = true;
   }
+
+  // Send time to the App
+  Blynk.virtualWrite(V12, currentHour);
 }
 
 BLYNK_WRITE(V3) {
   porcao = param.asInt();
+  //Serial.print("V3 changed value: ");
+  //Serial.println(V3);
+  //Serial.print("Porções de comida: ");
+  //Serial.println(porcao);
+}
+
+BLYNK_WRITE(V8) {
+  intervaloComida = param.asInt();
   //Serial.print("V3 changed value: ");
   //Serial.println(V3);
   //Serial.print("Porções de comida: ");
@@ -127,8 +164,12 @@ void ligar_desligar_agua() {
       else //Nível ruim -> sem água
       {
         //Serial.print("Nivel de agua baixo. Nao vai ligar a bomba \n");
+          // Envia 0 pra Água disponível
+          Blynk.virtualWrite(V9, 0);
       }
-//      Serial.print("Agua ligada n");
+        // Serial.print("Agua ligada n");
+        // Envia 1 pra Água disponível
+        Blynk.virtualWrite(V9, 1);
   }
   else
   {
@@ -137,12 +178,18 @@ void ligar_desligar_agua() {
 }
 //
 void solicita_comida(){
+    int horaAtual = hour();
+  
+    if (horaAtual - (ultimaComida + intervaloComida)) {
+      comida_solicitada = true;
+    }
     //Serial.println("Comida solicitada");
     //Serial.println((String)"Escolhido "+porcao+" porcoes de comida");
     
     //Limpa o pote de ração
     //Serial.println("Iniciando limpeza do pote");
     if(comida_solicitada){
+      ultimaComida = hour();
       pote.write(180);
       delay(1500);
       pote.write(0);
@@ -152,9 +199,16 @@ void solicita_comida(){
       if(digitalRead(Sensor_Infra) == LOW){ //SE A LEITURA DO PINO FOR IGUAL A LOW, FAZ
         //Serial.print("Comida disponivel \r\n");
         tem_comida = true;
+        // Envia 1 pra Comida Disponível
+        Blynk.virtualWrite(V1, 1);
+        Blynk.virtualWrite(V12, horaAtual);
+        
+        
       }else{ //SENÃO, FAZ
         //Serial.print("Nao tem comida \r\n");
         tem_comida = false;
+        // Envia 0 pra Comida Disponível
+        Blynk.virtualWrite(V1, 0);
       }
       
       //faz servo girar x vezes
@@ -179,6 +233,10 @@ void solicita_comida(){
     }
 }
 
+BLYNK_CONNECTED() {
+  // Synchronize time on connection
+  rtc.begin();
+}
 
 void setup() {
   Serial.begin(115200); //para debugar
@@ -203,7 +261,8 @@ void setup() {
   timer.setInterval(1000L, ligar_desligar_agua);
   timer.setInterval(1000L, solicita_comida);
 
-  
+  // configura intervalo de atualização do RTC
+  setSyncInterval(10 * 60);
   
   dispenser.attach(Servo_Dispenser);
   pote.attach(Servo_Pote);

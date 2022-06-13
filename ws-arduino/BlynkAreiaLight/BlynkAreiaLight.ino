@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 /*************************************************************
   WARNING!
     It's very tricky to get it working. Please read this article:
@@ -30,19 +32,17 @@
 #define BLYNK_AUTH_TOKEN "gcsFsW4eDLtAoJPt82IzSCeyE1uFGXUe"
 
 // Comment this out to disable prints and save space
-#define BLYNK_PRINT Serial
+//#define BLYNK_PRINT Serial
 
 #include <ESP8266_Lib.h>
 #include <BlynkSimpleShieldEsp8266.h>
-#include <TimeLib.h>
-#include <WidgetRTC.h>
 
 char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "Nelson";
-char pass[] = "universo";
+//char ssid[] = "Nelson";
+//char pass[] = "universo";
 //char ssid[] = "BakerStreet221b";
 //char pass[] = "ArseneLupin";
 //char ssid[] = "zeni12";
@@ -64,13 +64,11 @@ ESP8266 wifi(&EspSerial);
 
 BlynkTimer timer;
 
-WidgetRTC rtc;
-
 /*************************************************************/
 /****************  Setup - Caixa de areia ********************/
 
 // fim de curso usando ezButton (tratamentos adicionais, etc)
-#include <ezButton.h>
+//#include <ezButton.h>
 
 #define Fim_Curso_Inicio 4
 #define Fim_Curso_Fim 9
@@ -85,53 +83,29 @@ WidgetRTC rtc;
 
 bool praFrente = true;
 int presenca = 0;
-bool limpeza_completa = true;
-bool limpeza_solicitada = false;
-int ultimaLimpeza = 12;
-int limpezaAgendada = 12;
+int limpeza_completa = true;
+int limpeza_solicitada = false;
 
-ezButton fim_curso_inicio(Fim_Curso_Inicio);
-ezButton fim_curso_fim(Fim_Curso_Fim);
+bool fim_curso_inicio = false;
 
-//#include "RTClib.h" //INCLUSÃO DA BIBLIOTECA
+//ezButton fim_curso_inicio(Fim_Curso_Inicio);
+//ezButton fim_curso_fim(Fim_Curso_Fim);
+
+bool fim_curso_fim = false;
+
+#include "RTClib.h" //INCLUSÃO DA BIBLIOTECA
 
 /*************************************************************/
 
-// Digital clock display of the time
-void clockDisplay()
-{
-  // You can call hour(), minute(), ... at any time
-  // Please see Time library examples for details
-
-  ultimaLimpeza = hour();
-
-  String currentTime = String(hour()) + ":" + minute() + ":" + second();
-  String currentDate = String(day()) + " " + month() + " " + year();
-
-  // Send time to the App
-  Blynk.virtualWrite(V2, currentTime);
-  // Send date to the App
-  Blynk.virtualWrite(V17, currentDate);
-}
-
-BLYNK_CONNECTED() {
-  // Synchronize time on connection
-  rtc.begin();
-}
 
 BLYNK_WRITE(V1) {
-  int currentHour = hour();
-  
-  //Serial.print("V1 changed value: ");
-  //Serial.println(V1);
+  Serial.print("V1 changed value: ");
+  Serial.println(V1);
   if(param.asInt() == 1) {
-    //Serial.println("Limpeza solicitada");
+    Serial.println("Limpeza solicitada");
     limpeza_solicitada = true;
     limpeza_completa = false;
   }
-
-  // Send time to the App
-  Blynk.virtualWrite(V2, currentHour);
 }
 
 // V13 LED Widget is on or off
@@ -161,10 +135,10 @@ void realizarLimpeza() {
           //Serial.println("Presenca nao detectada");
           //Serial.println("Ligando motor.");
           
-          fim_curso_inicio.loop(); //MUST
-          fim_curso_fim.loop();
+          //fim_curso_inicio.loop(); //MUST
+          //fim_curso_fim.loop();
           
-          if(fim_curso_fim.isPressed()) {
+          if(fim_curso_fim) {
             //Serial.println("** Rastelo voltando **");
             praFrente = false;
             digitalWrite(Motor_IN1, HIGH);
@@ -178,10 +152,10 @@ void realizarLimpeza() {
             delay(500);
           }
   
-          if(fim_curso_fim.isReleased())
+          if(fim_curso_fim)
             praFrente = false;
   
-          if(fim_curso_inicio.isPressed() && !praFrente) {
+          if(fim_curso_inicio && !praFrente) {
             //Serial.println("** Rastelo chegou! **");
             // ir um pouquinho pra frente pra sair do botão
             digitalWrite(Motor_IN1, LOW);
@@ -191,18 +165,18 @@ void realizarLimpeza() {
             limpeza_completa = true;
             limpeza_solicitada = false;
             //led2.off();
-            //Serial.println("** Limpeza completa! **");
+            Serial.println("** Limpeza completa! **");
             digitalWrite(Motor_IN1, HIGH);
             digitalWrite(Motor_IN2, HIGH);
           }
   
-          if(fim_curso_inicio.isReleased()) {
+          if(fim_curso_inicio) {
             digitalWrite(Motor_IN1, HIGH);
             digitalWrite(Motor_IN2, HIGH);
           }
   
-          int state_fim = fim_curso_fim.getState();
-          int state_inicio = fim_curso_inicio.getState();
+          int state_fim = fim_curso_fim;
+          int state_inicio = fim_curso_inicio;
   
           if(state_fim == HIGH || state_inicio == HIGH) { // The limit switches: UNTOUCHED
             //Serial.println(praFrente);
@@ -243,7 +217,7 @@ void setup()
   delay(10);
 
   // Blynk
-  Blynk.begin(auth, wifi, ssid, pass);
+  Blynk.begin(auth, wifi, "Nelson", "universo");
   
   
   timer.setInterval(100L, realizarLimpeza);
@@ -251,16 +225,12 @@ void setup()
   //Blynk.begin(auth, wifi, ssid, pass, "blynk.cloud", 80);
   //Blynk.begin(auth, wifi, ssid, pass, IPAddress(192,168,1,100), 8080);
 
-  setSyncInterval(10 * 60);
-  // Display digital clock every 10 seconds
-  //timer.setInterval(10000L, clockDisplay);
-
   // Blynk
   // timer.setInterval(1000L, blinkLedWidget);
 
 
-  fim_curso_inicio.setDebounceTime(100); // set debounce time to 50 milliseconds
-  fim_curso_fim.setDebounceTime(100);
+  //fim_curso_inicio.setDebounceTime(100); // set debounce time to 50 milliseconds
+  //fim_curso_fim.setDebounceTime(100);
 
   pinMode(PIR, INPUT);
   
