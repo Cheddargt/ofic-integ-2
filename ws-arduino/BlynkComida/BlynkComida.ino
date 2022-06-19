@@ -1,10 +1,11 @@
 /*************************************************************
   AVISO!
     incluir bibliotecas:
-    
-  BlynkESP8266-master.zip
-  WiFiEsp-master.zip
-  ezButton (Library manager)
+
+  Blynk: Sketch > Include Library > Manage Libraries > Blynk
+  BlynkESP8266-master.zip (../BlynkESP8266-master.zip.zip)
+  WiFiEsp-master.zip (../WiFiEsp-master.zip.zip)
+  Time-master.zip (../Time-master.zip)
  *************************************************************/
 
  
