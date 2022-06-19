@@ -65,6 +65,9 @@ void loop()
       limpeza_completa = false;
       //Verifica sensor de presença
       presenca = digitalRead(PIR);
+      
+      // LINHA ABAIXO COMENTADA = sensor desabilitado
+      presenca = LOW;
 
       if(presenca == LOW) //Se não achou nada
       {
