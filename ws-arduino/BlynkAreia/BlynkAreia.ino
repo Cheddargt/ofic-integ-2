@@ -11,10 +11,12 @@
 /*************************************************************
   AVISO!
     incluir bibliotecas:
-    
-  BlynkESP8266-master.zip
-  WiFiEsp-master.zip
-  ezButton (Library manager)
+
+  Blynk: Sketch > Include Library > Manage Libraries > Blynk
+  BlynkESP8266-master.zip (../BlynkESP8266-master.zip.zip)
+  WiFiEsp-master.zip (../WiFiEsp-master.zip.zip)
+  Time-master.zip (../Time-master.zip)
+  ezButton: Sketch > Include Library > Manage Libraries > ezButton
  *************************************************************/
 
 //Programa : PET-STATION Sandbox
@@ -84,6 +86,7 @@ WidgetRTC rtc;
 #define PIR 8
 
 bool praFrente = true;
+// acho que sensor de presença não precisa ser global
 int presenca = 0;
 bool limpeza_completa = true;
 bool limpeza_solicitada = false;
@@ -158,9 +161,11 @@ void realizarLimpeza() {
       }
   
       //Verifica sensor de presença
-      //presenca = digitalRead(PIR);
+      presenca = digitalRead(PIR);
+      
       if(limpeza_solicitada && !limpeza_completa){
-        presenca = LOW;
+        // LINHA ABAIXO COMENTADA = sensor desabilitado
+        // presenca = LOW;
         
         if(presenca == LOW) //Se não achou nada
         {
@@ -232,9 +237,11 @@ void realizarLimpeza() {
           }
         } else { // detectou presença
           //Serial.println("Presenca detectada. Limpeza interrompida");
+          Blynk.virtualWrite(V4, horaAtual);
           digitalWrite(Motor_IN1, HIGH);
           digitalWrite(Motor_IN2, HIGH);
           delay(100); //Mudar depois para um tempo maior
+          
         }
       }
 }

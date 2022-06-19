@@ -160,16 +160,16 @@ void ligar_desligar_agua() {
         //Serial.print("Nivel OK \n");
         digitalWrite(Relay_Pin, LOW);
         //Serial.print("Bomba ligada \n");
+        // Envia 1 pra Água disponível
+        Blynk.virtualWrite(V9, 1);
       }
       else //Nível ruim -> sem água
       {
         //Serial.print("Nivel de agua baixo. Nao vai ligar a bomba \n");
-          // Envia 0 pra Água disponível
-          Blynk.virtualWrite(V9, 0);
+        // Envia 0 pra Água disponível
+        Blynk.virtualWrite(V9, 0);
       }
         // Serial.print("Agua ligada n");
-        // Envia 1 pra Água disponível
-        Blynk.virtualWrite(V9, 1);
   }
   else
   {
