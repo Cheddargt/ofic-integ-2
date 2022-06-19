@@ -181,7 +181,7 @@ void ligar_desligar_agua() {
 void solicita_comida(){
     int horaAtual = hour();
   
-    if (horaAtual - (ultimaComida + intervaloComida)) {
+    if ((horaAtual - (ultimaComida + intervaloComida)) == 0) {
       comida_solicitada = true;
     }
     //Serial.println("Comida solicitada");

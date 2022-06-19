@@ -155,7 +155,7 @@ void checkLEDStatus()
 void realizarLimpeza() {
       int horaAtual = hour();
 
-      if (horaAtual - (ultimaLimpeza + intervaloLimpeza)) {
+    if ((horaAtual - (ultimaLimpeza + intervaloLimpeza)) == 0) {
         limpeza_solicitada = true;
         limpeza_completa = false;
       }
