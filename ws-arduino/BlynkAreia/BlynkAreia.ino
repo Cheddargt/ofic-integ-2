@@ -43,10 +43,10 @@ char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-//char ssid[] = "BakerStreet221b";
-//char pass[] = "ArseneLupin";
-char ssid[] = "Nelson";
-char pass[] = "universo";
+char ssid[] = "BakerStreet221b";
+char pass[] = "ArseneLupin";
+//char ssid[] = "Nelson";
+//char pass[] = "universo";
 //char ssid[] = "zn";
 //char pass[] = "paraquedas";
 
@@ -91,7 +91,7 @@ int presenca = 0;
 bool limpeza_completa = true;
 bool limpeza_solicitada = false;
 int ultimaLimpeza = 12;
-int intervaloLimpeza = 0;
+int intervaloLimpeza = 30;
 
 ezButton fim_curso_inicio(Fim_Curso_Inicio);
 ezButton fim_curso_fim(Fim_Curso_Fim);
@@ -106,10 +106,10 @@ void clockDisplay()
   // You can call hour(), minute(), ... at any time
   // Please see Time library examples for details
 
-  ultimaLimpeza = hour();
+  //ultimaLimpeza = second();
 
-  String currentTime = String(hour()) + ":" + minute() + ":" + second();
-  String currentDate = String(day()) + " " + month() + " " + year();
+  //String currentTime = String(hour()) + ":" + minute() + ":" + second();
+  //String currentDate = String(day()) + " " + month() + " " + year();
 
   // Send time to the App
   //Blynk.virtualWrite(V2, currentTime);
@@ -123,7 +123,7 @@ BLYNK_CONNECTED() {
 }
 
 BLYNK_WRITE(V1) {
-  int currentHour = hour();
+  int currentHour = second();
   
   //Serial.print("V1 changed value: ");
   //Serial.println(V1);
@@ -153,9 +153,9 @@ void checkLEDStatus()
 ***/
 
 void realizarLimpeza() {
-      int horaAtual = hour();
+      int horaAtual = second();
 
-    if ((horaAtual - (ultimaLimpeza + intervaloLimpeza)) == 0) {
+    if ((horaAtual - (ultimaLimpeza + intervaloLimpeza)) <= 0) {
         limpeza_solicitada = true;
         limpeza_completa = false;
       }
