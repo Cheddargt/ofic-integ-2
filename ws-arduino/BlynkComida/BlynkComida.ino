@@ -27,12 +27,12 @@ char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "BakerStreet221b";
-char pass[] = "ArseneLupin";
 //char ssid[] = "BakerStreet221b";
 //char pass[] = "ArseneLupin";
-//char ssid[] = "zn";
-//char pass[] = "paraquedas";
+//char ssid[] = "BakerStreet221b";
+//char pass[] = "ArseneLupin";
+char ssid[] = "zn";
+char pass[] = "paraquedas";
 
 
 
@@ -121,7 +121,9 @@ void ligar_desligar_agua() {
     nivel_agua = readSensorAgua();
 
       // Nível padrâo: 150
-      if(nivel_agua > 300)  //Nível ok -> liga bomba 
+      // if(nivel_agua > 50)  //Nível ok -> liga bomba 
+      if(1 > 0)  //Nível ok -> liga bomba 
+      
       {
         //Serial.print("Nivel OK \n");
         digitalWrite(Relay_Pin, LOW);
