@@ -70,8 +70,8 @@ WidgetRTC rtc;
 //Variáveis do código
 int porcao = 1;  //quantidade de porções de comida tem que colocar
 int nivel_agua = 0;
-int ultimaComida = 30;
-int intervaloComida = 29;
+int ultimaComida = 49;
+int intervaloComida = 5;
 Servo dispenser;
 Servo pote;
 bool tem_comida = false; 
@@ -146,18 +146,18 @@ void ligar_desligar_agua() {
 }
 //
 void solicita_comida(){
-    int horaAtual = second();
+    int horaAtual = minute();
 
     // alternativa 1: salvar o horário agora e atualizar ao final do percurso
     // alternativa 2: enviar o horário pro blynk e pegar no final
 
-    int agendamento = (horaAtual - (ultimaComida + intervaloComida));
+    int agendamento = (horaAtual-(ultimaComida+intervaloComida));
     
-    Serial.println(horaAtual);
-    Serial.println(ultimaComida);
-    Serial.println(intervaloComida);
+    //Serial.println(horaAtual);
+    //Serial.println(ultimaComida);
+    //Serial.println(intervaloComida);
     Serial.println(agendamento);
-    if ((horaAtual - (ultimaComida + intervaloComida)) <= 0) {
+    if ((horaAtual - (ultimaComida + intervaloComida)) >= 0) {
       comida_solicitada = true;
     }
     
@@ -185,7 +185,7 @@ void solicita_comida(){
         // Delay fix:
         time_t time_now_adjust = now();
         Blynk.virtualWrite(V12, horaAtual);
-        ultimaComida = second();
+        ultimaComida = minute();
         
         // Limpa o pote de ração
         // Problema com agendamento:
@@ -206,7 +206,9 @@ void solicita_comida(){
         dispenser.write(0);
         dispenser.detach();
         // Delay fix:
+        //Serial.print("time_now_adjust after: ");
         setTime(time_now_adjust);
+        Serial.println(minute());
       }
       
       comida_solicitada = false;
