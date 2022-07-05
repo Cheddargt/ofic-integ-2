@@ -43,12 +43,12 @@ char auth[] = BLYNK_AUTH_TOKEN;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-//char ssid[] = "BakerStreet221b";
-//char pass[] = "ArseneLupin";
+char ssid[] = "BakerStreet221b";
+char pass[] = "ArseneLupin";
 //char ssid[] = "Nelson";
 //char pass[] = "universo";
-char ssid[] = "zn";
-char pass[] = "paraquedas";
+//char ssid[] = "zn";
+//char pass[] = "paraquedas";
 
 
 // or Software Serial on Uno, Nano...
@@ -87,9 +87,9 @@ WidgetRTC rtc;
 
 bool praFrente = true;
 // acho que sensor de presença não precisa ser global
-// mudei agora
 //int presenca = 0;
-//bool agendarLimpeza = false;
+// mudei agora
+bool agendarLimpeza = false;
 bool limpeza_completa = true;
 bool limpeza_solicitada = false;
 int ultimaLimpeza = 49;
@@ -143,14 +143,14 @@ BLYNK_WRITE(V11) {
     intervaloLimpeza = param.asInt();
 }
 
-
-//BLYNK_WRITE(V0) {
-  //if(param.asInt() == 1) {
-    //agendarLimpeza = true;
-  //} else {
-    //agendarLimpeza = false;
-  //}
-//}
+// mudei agora
+BLYNK_WRITE(V0) {
+  if(param.asInt() == 1) {
+    agendarLimpeza = true;
+  } else {
+    agendarLimpeza = false;
+  }
+}
 
 // V13 LED Widget is on or off
 /***
@@ -172,7 +172,7 @@ void realizarLimpeza() {
       int agendamento = (horaAtual - (ultimaLimpeza + intervaloLimpeza));
 
     Serial.println(agendamento);
-    if (((horaAtual - (ultimaLimpeza + intervaloLimpeza)) == 0)) {
+    if (agendarLimpeza && ((horaAtual - (ultimaLimpeza + intervaloLimpeza)) == 0)) {
         limpeza_solicitada = true;
         limpeza_completa = false;
       }
